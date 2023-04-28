@@ -6,6 +6,7 @@ import (
 	"shoppingApp/internal/client"
 	"shoppingApp/internal/validator"
 	"time"
+	"unicode"
 )
 
 type Product struct {
@@ -15,7 +16,7 @@ type Product struct {
 	DeletedAt   gorm.DeletedAt `json:"-" gorm:"index"`
 	Title       string         `json:"title" gorm:"type:text;size:100;not null"`
 	Description string         `json:"description" gorm:"type:text;size:500;not null"`
-	Price       float32        `json:"price" gorm:"type:decimal(10,2);not null"`
+	Price       int32          `json:"price" gorm:"type:integer;not null"`
 	Brand       string         `json:"brand" gorm:"type:text;size:60;not null"`
 	Category    pq.StringArray `json:"category" gorm:"type:text[];not null"`
 }
@@ -25,14 +26,14 @@ func (product Product) Create() (Product, error) {
 	return product, err.Error
 }
 
-func (product Product) Get(query ...interface{}) (Product, error) {
+func (product Product) Find(query ...interface{}) (Product, error) {
 	err := client.PostgreSqlClient.First(&product, query...)
 	return product, err.Error
 }
 
-func (product Product) GetAll(query ...interface{}) []Product {
+func (product Product) Get(limit int, offset int, query ...interface{}) []Product {
 	var products []Product
-	client.PostgreSqlClient.Find(&products, query...)
+	client.PostgreSqlClient.Limit(limit).Offset(offset).Find(&products, query...)
 	return products
 }
 
@@ -64,8 +65,7 @@ func ValidateProduct(v *validator.Validator, product *Product) {
 	v.Check(product.Description != "", "description", "must be provided")
 	v.Check(len(product.Description) <= 500, "description", "must not be more than 500 characters long")
 
-	// todo: add number validation
-	v.Check(product.Price != 0, "price", "must be provided")
+	v.Check(product.Price != 0 && !unicode.IsDigit(product.Price), "price", "must be provided")
 	v.Check(product.Price >= 0, "price", "must be a positive number")
 
 	v.Check(product.Brand != "", "brand", "must be provided")

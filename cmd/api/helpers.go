@@ -7,6 +7,8 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"io"
 	"net/http"
+	"net/url"
+	"shoppingApp/internal/validator"
 	"strconv"
 	"strings"
 )
@@ -94,4 +96,45 @@ func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst any
 	}
 
 	return nil
+}
+
+// The readString() helper returns a string value from the query string
+func (app *application) readString(qs url.Values, key string, defaultValue string) string {
+	s := qs.Get(key)
+
+	if s == "" {
+		return defaultValue
+	}
+
+	return s
+}
+
+// The readCSV() helper reads a string value from the query string and then splits it
+// into a slice on the comma character
+func (app *application) readCSV(qs url.Values, key string, defaultValue []string) []string {
+	csv := qs.Get(key)
+
+	if csv == "" {
+		return defaultValue
+	}
+
+	return strings.Split(csv, ",")
+}
+
+// The readInt() helper reads a string value from the query string and converts it to an
+// integer before returning
+func (app *application) readInt(qs url.Values, key string, defaultValue int, v *validator.Validator) int {
+	s := qs.Get(key)
+
+	if s == "" {
+		return defaultValue
+	}
+
+	i, err := strconv.Atoi(s)
+	if err != nil {
+		v.AddError(key, "must be an integer value")
+		return defaultValue
+	}
+
+	return i
 }
