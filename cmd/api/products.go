@@ -4,11 +4,42 @@ import (
 	"fmt"
 	"net/http"
 	"shoppingApp/internal/data"
+	"shoppingApp/internal/validator"
 	"time"
 )
 
 func (app *application) createProductHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "create a new product")
+	var input struct {
+		Title       string   `json:"title"`
+		Description string   `json:"description"`
+		Price       float32  `json:"price"`
+		Brand       string   `json:"brand"`
+		Category    []string `json:"category"`
+	}
+
+	err := app.readJSON(w, r, &input)
+
+	if err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	product := &data.Product{
+		Title:       input.Title,
+		Description: input.Description,
+		Price:       input.Price,
+		Brand:       input.Brand,
+		Category:    input.Category,
+	}
+
+	v := validator.New()
+
+	if data.ValidateProduct(v, product); !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+
+	fmt.Fprintf(w, "%+v\n", input)
 }
 
 // showProductHandler for the "GET /v1/products/:id" endpoint.
@@ -32,7 +63,6 @@ func (app *application) showProductHandler(w http.ResponseWriter, r *http.Reques
 	err = app.writeJSON(w, http.StatusOK, envelope{"product": product}, nil)
 
 	if err != nil {
-		app.logger.Print(err)
-		http.Error(w, "The server encountered a problem and could not process your request", http.StatusInternalServerError)
+		app.serverErrorResponse(w, r, err)
 	}
 }
