@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"shoppingApp/internal/data"
+	"shoppingApp/internal/model"
 	"shoppingApp/internal/validator"
 	"time"
 )
@@ -24,7 +24,7 @@ func (app *application) createProductHandler(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	product := &data.Product{
+	product := &model.Product{
 		Title:       input.Title,
 		Description: input.Description,
 		Price:       input.Price,
@@ -34,7 +34,7 @@ func (app *application) createProductHandler(w http.ResponseWriter, r *http.Requ
 
 	v := validator.New()
 
-	if data.ValidateProduct(v, product); !v.Valid() {
+	if model.ValidateProduct(v, product); !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
 		return
 	}
@@ -50,7 +50,7 @@ func (app *application) showProductHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	product := data.Product{
+	product := model.Product{
 		ID:          id,
 		CreatedAt:   time.Now(),
 		Title:       "iPhone 14",

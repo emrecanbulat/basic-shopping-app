@@ -3,14 +3,15 @@ package main
 import (
 	"flag"
 	"fmt"
+	_ "github.com/joho/godotenv/autoload"
 	"log"
 	"net/http"
 	"os"
+	"shoppingApp/internal/client"
+	"shoppingApp/internal/model"
+	"strconv"
 	"time"
 )
-
-// application version number.
-const version = "1.0.0"
 
 // Define a config struct to hold all the configuration settings for our application.
 type config struct {
@@ -26,10 +27,14 @@ type application struct {
 
 func main() {
 	var cfg config
+	appPort, _ := strconv.Atoi(os.Getenv("APP_PORT"))
 
-	flag.IntVar(&cfg.port, "port", 8080, "API server port")
-	flag.StringVar(&cfg.env, "env", "development", "Environment (development|staging|production)")
+	flag.IntVar(&cfg.port, "port", appPort, "API server port")
+	flag.StringVar(&cfg.env, "env", os.Getenv("APP_ENV"), "Environment (development|staging|production)")
 	flag.Parse()
+
+	client.Connections()
+	model.Migrate()
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 

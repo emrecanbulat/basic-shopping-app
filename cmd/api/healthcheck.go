@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 )
 
 // application status, operating environment and version.
@@ -10,7 +11,7 @@ func (app *application) healthcheckHandler(w http.ResponseWriter, r *http.Reques
 		"status": "available",
 		"system_info": map[string]string{
 			"environment": app.config.env,
-			"version":     version,
+			"version":     os.Getenv("VERSION"),
 		},
 	}
 
