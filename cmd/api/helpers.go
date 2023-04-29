@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
+	"golang.org/x/crypto/bcrypt"
 	"io"
 	"net/http"
 	"net/url"
@@ -25,6 +26,11 @@ func (app *application) readIDParam(r *http.Request) (int64, error) {
 }
 
 type envelope map[string]any
+
+type password struct {
+	plaintext *string
+	hash      []byte
+}
 
 func (app *application) writeJSON(w http.ResponseWriter, status int, data envelope, headers http.Header) error {
 	js, err := json.Marshal(data)
@@ -137,4 +143,32 @@ func (app *application) readInt(qs url.Values, key string, defaultValue int, v *
 	}
 
 	return i
+}
+
+// Set the plaintext password and hash it.
+func (p *password) Set(plaintextPassword string) error {
+	hash, err := bcrypt.GenerateFromPassword([]byte(plaintextPassword), 12)
+	if err != nil {
+		return err
+	}
+
+	p.plaintext = &plaintextPassword
+	p.hash = hash
+
+	return nil
+}
+
+// Matches compare the plaintext password with the hash.
+func (p *password) Matches(plaintextPassword string) (bool, error) {
+	err := bcrypt.CompareHashAndPassword(p.hash, []byte(plaintextPassword))
+	if err != nil {
+		switch {
+		case errors.Is(err, bcrypt.ErrMismatchedHashAndPassword):
+			return false, nil
+		default:
+			return false, err
+		}
+	}
+
+	return true, nil
 }

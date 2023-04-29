@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"shoppingApp/internal/client"
+	"shoppingApp/internal/jsonlog"
 	"shoppingApp/internal/model"
 	"strconv"
 	"time"
@@ -22,7 +23,7 @@ type config struct {
 // Define an application struct to hold the dependencies for our HTTP handlers, helpers, and middleware.
 type application struct {
 	config config
-	logger *log.Logger
+	logger *jsonlog.Logger
 }
 
 func main() {
@@ -36,7 +37,7 @@ func main() {
 	client.Connections()
 	model.Migrate()
 
-	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
+	logger := jsonlog.New(os.Stdout, jsonlog.LevelInfo)
 
 	app := &application{
 		config: cfg,
@@ -46,12 +47,17 @@ func main() {
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%d", cfg.port),
 		Handler:      app.routes(),
+		ErrorLog:     log.New(logger, "", 0),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}
 
-	logger.Printf("starting %s server on %s", cfg.env, srv.Addr)
+	logger.PrintInfo("starting server", map[string]string{
+		"addr": srv.Addr,
+		"env":  cfg.env,
+	})
+
 	err := srv.ListenAndServe()
-	logger.Fatal(err)
+	logger.PrintFatal(err, nil)
 }

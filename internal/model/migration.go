@@ -8,6 +8,7 @@ import (
 func Migrate() {
 	err := client.PostgreSqlClient.Migrator().AutoMigrate(
 		&Product{},
+		&User{},
 	)
 
 	if err != nil {
