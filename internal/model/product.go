@@ -4,6 +4,7 @@ import (
 	"github.com/lib/pq"
 	"gorm.io/gorm"
 	"shoppingApp/internal/client"
+	"shoppingApp/internal/data"
 	"shoppingApp/internal/validator"
 	"time"
 	"unicode"
@@ -31,10 +32,20 @@ func (product Product) Find(query ...interface{}) (Product, error) {
 	return product, err.Error
 }
 
-func (product Product) Get(limit int, offset int, query ...interface{}) []Product {
+func (product Product) Get(filter data.Filters, query ...interface{}) ([]Product, data.Metadata) {
 	var products []Product
-	client.PostgreSqlClient.Limit(limit).Offset(offset).Find(&products, query...)
-	return products
+	postClient := client.PostgreSqlClient
+	var totalCount int64
+
+	postClient = postClient.Order(filter.SortColumn() + " " + filter.SortDirection())
+	postClient = postClient.Limit(filter.Limit())
+	postClient = postClient.Offset(filter.Offset())
+
+	postClient.Find(&products, query...)
+	postClient.Model(&Product{}).Count(&totalCount)
+
+	metadata := data.CalculateMetadata(totalCount, filter.Page, filter.PageSize)
+	return products, metadata
 }
 
 func (product Product) Update(column string, value interface{}) error {

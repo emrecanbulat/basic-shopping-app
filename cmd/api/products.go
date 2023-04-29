@@ -185,24 +185,23 @@ func (app *application) listProductsHandler(w http.ResponseWriter, r *http.Reque
 	input.Brand = app.readString(qs, "brand", "")
 	input.Category = app.readCSV(qs, "category", []string{})
 
-	input.Filters.Page = app.readInt(qs, "page", 1, v)
-	input.Filters.PageSize = app.readInt(qs, "page_size", 20, v)
-	input.Filters.Sort = app.readString(qs, "sort", "id")
+	input.Page = app.readInt(qs, "page", 1, v)
+	input.PageSize = app.readInt(qs, "page_size", 20, v)
+	input.Sort = app.readString(qs, "sort", "id")
 
-	input.Filters.SortSafelist = []string{"id", "title", "price", "brand"}
+	input.SortSafelist = []string{"id", "title", "price", "brand", "-id", "-title", "-price", "-brand"}
 
 	if data.ValidateFilters(v, input.Filters); !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
 		return
 	}
 
-	// todo add sort to query
-	products := model.Product{}.Get(input.Limit(), input.Offset(),
+	products, meta := model.Product{}.Get(input.Filters,
 		"(to_tsvector('simple', brand) @@ plainto_tsquery('simple', ?) OR ? = '') AND (to_tsvector('simple', title) @@ plainto_tsquery('simple', ?) OR ? = '') AND (category @> ? OR ? = '{}')",
 		input.Brand, input.Brand, input.Title, input.Title, pq.Array(input.Category), pq.Array(input.Category),
 	)
 
-	err := app.writeJSON(w, http.StatusOK, envelope{"products": products}, nil)
+	err := app.writeJSON(w, http.StatusOK, envelope{"meta": meta, "products": products}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
