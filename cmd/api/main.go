@@ -18,6 +18,9 @@ import (
 type config struct {
 	port int
 	env  string
+	jwt  struct {
+		secret string
+	}
 }
 
 // Define an application struct to hold the dependencies for our HTTP handlers, helpers, and middleware.
@@ -26,12 +29,15 @@ type application struct {
 	logger *jsonlog.Logger
 }
 
+const adminKey = "admin"
+
 func main() {
 	var cfg config
 	appPort, _ := strconv.Atoi(os.Getenv("APP_PORT"))
 
 	flag.IntVar(&cfg.port, "port", appPort, "API server port")
 	flag.StringVar(&cfg.env, "env", os.Getenv("APP_ENV"), "Environment (development|staging|production)")
+	flag.StringVar(&cfg.jwt.secret, "jwt-secret", os.Getenv("JWT_SECRET"), "JWT secret")
 	flag.Parse()
 
 	client.Connections()

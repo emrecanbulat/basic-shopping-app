@@ -33,7 +33,7 @@ type password struct {
 }
 
 func (app *application) writeJSON(w http.ResponseWriter, status int, data envelope, headers http.Header) error {
-	js, err := json.Marshal(data)
+	js, err := json.Marshal(&data)
 	if err != nil {
 		return err
 	}

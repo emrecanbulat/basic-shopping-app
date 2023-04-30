@@ -5,9 +5,10 @@ import (
 	"net/http"
 	"shoppingApp/internal/model"
 	"shoppingApp/internal/validator"
+	"time"
 )
 
-// registerUserHandler handles the registration of new users
+// registerUserHandler handles the registration of new users and generates a JWT token
 func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		FullName string `json:"full_name"`
@@ -24,7 +25,7 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 	user := &model.User{
 		FullName:  input.FullName,
 		Email:     input.Email,
-		Activated: false,
+		Activated: true,
 		Password:  []byte(input.Password),
 	}
 
@@ -35,16 +36,15 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	password := password{}
-	err = password.Set(input.Password)
+	userPass := password{}
+	err = userPass.Set(input.Password)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return
 	}
-	user.Password = password.hash
+	user.Password = userPass.hash
 
 	newUser, createErr := user.Create()
-
 	if createErr != nil {
 		switch {
 		case errors.Is(createErr, model.ErrDuplicateEmail):
@@ -56,7 +56,23 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	err = app.writeJSON(w, http.StatusCreated, envelope{"user": newUser}, nil)
+	role := "user"
+	if newUser.ID == 1 {
+		role = "admin"
+	}
+
+	token, err := model.Token{}.Create(newUser, role, app.config.jwt.secret)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	authentication := map[string]string{
+		"token":  string(token.Hash),
+		"expiry": token.Expiry.Format(time.DateTime),
+	}
+
+	err = app.writeJSON(w, http.StatusCreated, envelope{"user": newUser, "access_token": authentication}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}

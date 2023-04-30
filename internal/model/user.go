@@ -21,6 +21,8 @@ type User struct {
 	Activated bool           `json:"activated" gorm:"type:bool;not null"`
 }
 
+var AnonymousUser = &User{}
+
 // Custom ErrDuplicateEmail error.
 var (
 	ErrDuplicateEmail = errors.New("duplicate email")
@@ -42,6 +44,9 @@ func (user User) Create() (User, error) {
 
 func (user User) Find(query ...interface{}) (User, error) {
 	err := client.PostgreSqlClient.First(&user, query...)
+	if user.ID == 0 {
+		return user, ErrRecordNotFound
+	}
 	return user, err.Error
 }
 
@@ -78,7 +83,12 @@ func (user User) Delete(column string, value interface{}) error {
 
 func (user User) Count(column string, value interface{}) int64 {
 	var counter int64
-	client.PostgreSqlClient.Model(&user).Where(column, value).Count(&counter)
+	postClient := client.PostgreSqlClient.Model(&user)
+	if column != "" && value != "" {
+		postClient.Where(column, value)
+	}
+	postClient.Count(&counter)
+
 	return counter
 }
 
