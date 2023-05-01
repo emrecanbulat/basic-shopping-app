@@ -54,17 +54,16 @@ func (app *application) createAuthenticationTokenHandler(w http.ResponseWriter, 
 		return
 	}
 
-	role := app.contextGetUserRole(r)
 	token := model.Token{}
 
 	tokenCheck := model.Token{}.Count("user_id", user.ID)
 	if tokenCheck > 0 {
 		token, err = model.Token{}.Find("user_id", user.ID)
-		newToken, _ := model.GenerateToken(user, role, app.config.jwt.secret)
+		newToken, _ := model.GenerateToken(user, app.config.jwt.secret)
 		err = token.Update("hash", newToken.Hash)
 		token.Hash = newToken.Hash
 	} else {
-		token, err = model.Token{}.Create(user, role, app.config.jwt.secret)
+		token, err = model.Token{}.Create(user, app.config.jwt.secret)
 	}
 
 	if err != nil {

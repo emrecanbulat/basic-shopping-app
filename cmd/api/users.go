@@ -14,6 +14,8 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		FullName string `json:"full_name"`
 		Email    string `json:"email"`
 		Password string `json:"password"`
+		Address  string `json:"address"`
+		Phone    string `json:"phone"`
 	}
 
 	err := app.readJSON(w, r, &input)
@@ -23,10 +25,12 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	user := &model.User{
-		FullName:  input.FullName,
-		Email:     input.Email,
-		Activated: true,
-		Password:  []byte(input.Password),
+		FullName: input.FullName,
+		Email:    input.Email,
+		IsAdmin:  false,
+		Password: []byte(input.Password),
+		Address:  input.Address,
+		Phone:    input.Phone,
 	}
 
 	v := validator.New()
@@ -56,12 +60,7 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	role := "user"
-	if newUser.ID == 1 {
-		role = "admin"
-	}
-
-	token, err := model.Token{}.Create(newUser, role, app.config.jwt.secret)
+	token, err := model.Token{}.Create(newUser, app.config.jwt.secret)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return

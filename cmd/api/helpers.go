@@ -14,6 +14,15 @@ import (
 	"strings"
 )
 
+// envelope is used for wrapping JSON responses.
+type envelope map[string]any
+
+type password struct {
+	plaintext *string
+	hash      []byte
+}
+
+// readIDParam reads and parses the id URL parameter.
 func (app *application) readIDParam(r *http.Request) (int64, error) {
 	params := httprouter.ParamsFromContext(r.Context())
 
@@ -25,13 +34,7 @@ func (app *application) readIDParam(r *http.Request) (int64, error) {
 	return id, nil
 }
 
-type envelope map[string]any
-
-type password struct {
-	plaintext *string
-	hash      []byte
-}
-
+// writeJSON is a helper function that writes a JSON response.
 func (app *application) writeJSON(w http.ResponseWriter, status int, data envelope, headers http.Header) error {
 	js, err := json.Marshal(&data)
 	if err != nil {
@@ -49,8 +52,8 @@ func (app *application) writeJSON(w http.ResponseWriter, status int, data envelo
 	return nil
 }
 
+// readJSON reads and parses JSON from a request body.
 func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst any) error {
-
 	// limit the size of the request body to 1MB.
 	maxBytes := 1_048_576
 	r.Body = http.MaxBytesReader(w, r.Body, int64(maxBytes))

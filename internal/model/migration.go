@@ -13,6 +13,7 @@ func Migrate() {
 		&Product{},
 		&User{},
 		&Token{},
+		&Order{},
 	)
 
 	if err != nil {

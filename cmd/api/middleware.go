@@ -21,18 +21,12 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Vary", "Authorization")
 
-		if strings.HasSuffix(r.URL.Path, "/users") && r.Method == http.MethodPost {
-			r = app.contextSetUserRole(r, jwtParse.Role)
-			next.ServeHTTP(w, r)
-			return
-		} else if strings.HasSuffix(r.URL.Path, "/authentication") {
-			r = app.contextSetUserRole(r, "user")
+		if (strings.HasSuffix(r.URL.Path, "/users") && r.Method == http.MethodPost) || strings.HasSuffix(r.URL.Path, "/authentication") {
 			next.ServeHTTP(w, r)
 			return
 		}
 
 		authorizationHeader := r.Header.Get("Authorization")
-
 		if authorizationHeader == "" {
 			app.invalidAuthenticationTokenResponse(w, r)
 			return
@@ -45,7 +39,6 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 		}
 
 		token := headerParts[1]
-
 		claims, err := jwt.HMACCheck([]byte(token), []byte(app.config.jwt.secret))
 		if err != nil {
 			app.invalidAuthenticationTokenResponse(w, r)
@@ -58,7 +51,6 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 		}
 
 		_ = json.Unmarshal(claims.Raw, &jwtParse)
-
 		_, err = model.Token{}.Find("user_id = ? AND hash = ? AND expiry > ?", jwtParse.Id, token, time.Now())
 
 		if err != nil {
@@ -71,11 +63,9 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 			return
 		}
 
-		//user, _ := model.User{}.Find("id = ? AND email = ?", jwtParse.Id, jwtParse.Email)
+		user, _ := model.User{}.Find("id = ? AND email = ?", jwtParse.Id, jwtParse.Email)
+		r = app.contextSetUser(r, &user)
 
-		// Add the user record to the request context and continue as normal.
-		//r = app.contextSetUser(r, &user)
-		r = app.contextSetUserRole(r, jwtParse.Role)
 		next.ServeHTTP(w, r)
 	})
 }
@@ -91,4 +81,16 @@ func (app *application) recoverPanic(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+func (app *application) requirePermission(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		user := app.contextGetUser(r)
+		if !user.IsAdmin {
+			app.notPermittedResponse(w, r)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	}
 }

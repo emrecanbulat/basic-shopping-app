@@ -23,13 +23,13 @@ type Product struct {
 }
 
 func (product Product) Create() (Product, error) {
-	err := client.PostgreSqlClient.Create(&product)
-	return product, err.Error
+	result := client.PostgreSqlClient.Create(&product)
+	return product, result.Error
 }
 
 func (product Product) Find(query ...interface{}) (Product, error) {
-	err := client.PostgreSqlClient.First(&product, query...)
-	return product, err.Error
+	result := client.PostgreSqlClient.First(&product, query...)
+	return product, result.Error
 }
 
 func (product Product) Get(filter data.Filters, query ...interface{}) ([]Product, data.Metadata) {
@@ -49,23 +49,27 @@ func (product Product) Get(filter data.Filters, query ...interface{}) ([]Product
 }
 
 func (product Product) Update(column string, value interface{}) error {
-	err := client.PostgreSqlClient.Model(&product).Update(column, value)
-	return err.Error
+	result := client.PostgreSqlClient.Model(&product).Update(column, value)
+	return result.Error
 }
 
 func (product Product) Updates(data Product) error {
-	err := client.PostgreSqlClient.Model(&product).Updates(data)
-	return err.Error
+	result := client.PostgreSqlClient.Model(&product).Updates(data)
+	return result.Error
 }
 
 func (product Product) Delete(column string, value interface{}) error {
-	err := client.PostgreSqlClient.Model(&product).Delete(column, value)
-	return err.Error
+	result := client.PostgreSqlClient.Model(&product).Delete(column, value)
+	return result.Error
 }
 
 func (product Product) Count(column string, value interface{}) int64 {
 	var counter int64
-	client.PostgreSqlClient.Model(&product).Where(column, value).Count(&counter)
+	postClient := client.PostgreSqlClient.Model(&product)
+	if column != "" && value != "" {
+		postClient.Where(column, value)
+	}
+	postClient.Count(&counter)
 	return counter
 }
 

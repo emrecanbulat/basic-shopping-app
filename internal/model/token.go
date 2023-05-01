@@ -14,8 +14,8 @@ type Token struct {
 	Expiry time.Time `json:"expiry"`
 }
 
-func (token Token) Create(user User, role, jwtSecret string) (Token, error) {
-	token, err := GenerateToken(user, role, jwtSecret)
+func (token Token) Create(user User, jwtSecret string) (Token, error) {
+	token, err := GenerateToken(user, jwtSecret)
 	if err != nil {
 		return token, err
 	}
@@ -25,21 +25,21 @@ func (token Token) Create(user User, role, jwtSecret string) (Token, error) {
 }
 
 func (token Token) Update(column string, value interface{}) error {
-	err := client.PostgreSqlClient.Model(&token).Update(column, value)
-	return err.Error
+	result := client.PostgreSqlClient.Model(&token).Update(column, value)
+	return result.Error
 }
 
 func (token Token) Updates(data Token) error {
-	err := client.PostgreSqlClient.Model(&token).Updates(data)
-	return err.Error
+	result := client.PostgreSqlClient.Model(&token).Updates(data)
+	return result.Error
 }
 
 func (token Token) Find(query ...interface{}) (Token, error) {
-	err := client.PostgreSqlClient.First(&token, query...)
+	result := client.PostgreSqlClient.First(&token, query...)
 	if token.UserID == 0 {
 		return token, ErrRecordNotFound
 	}
-	return token, err.Error
+	return token, result.Error
 }
 
 func (token Token) Count(column string, value interface{}) int64 {
@@ -48,7 +48,7 @@ func (token Token) Count(column string, value interface{}) int64 {
 	return counter
 }
 
-func GenerateToken(user User, role, jwtSecret string) (Token, error) {
+func GenerateToken(user User, jwtSecret string) (Token, error) {
 	token := Token{
 		UserID: user.ID,
 		Expiry: time.Now().Add(24 * time.Hour),
@@ -60,7 +60,6 @@ func GenerateToken(user User, role, jwtSecret string) (Token, error) {
 	claims.Expires = jwt.NewNumericTime(time.Now().Add(24 * time.Hour))
 	claims.Set = map[string]interface{}{
 		"email": user.Email,
-		"role":  role,
 		"id":    user.ID,
 	}
 

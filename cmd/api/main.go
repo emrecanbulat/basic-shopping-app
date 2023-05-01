@@ -10,6 +10,7 @@ import (
 	"shoppingApp/internal/client"
 	"shoppingApp/internal/jsonlog"
 	"shoppingApp/internal/model"
+	"shoppingApp/internal/seed"
 	"strconv"
 	"time"
 )
@@ -29,8 +30,6 @@ type application struct {
 	logger *jsonlog.Logger
 }
 
-const adminKey = "admin"
-
 func main() {
 	var cfg config
 	appPort, _ := strconv.Atoi(os.Getenv("APP_PORT"))
@@ -42,6 +41,7 @@ func main() {
 
 	client.Connections()
 	model.Migrate()
+	seed.Seed()
 
 	logger := jsonlog.New(os.Stdout, jsonlog.LevelInfo)
 

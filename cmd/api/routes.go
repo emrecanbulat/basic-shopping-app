@@ -15,15 +15,18 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodGet, "/v1/healthcheck", app.healthcheckHandler)
 
 	// Products
-	router.HandlerFunc(http.MethodPost, "/v1/products", app.createProductHandler)
+	router.HandlerFunc(http.MethodPost, "/v1/products", app.requirePermission(app.createProductHandler))
 	router.HandlerFunc(http.MethodGet, "/v1/products/:id", app.showProductHandler)
-	router.HandlerFunc(http.MethodPut, "/v1/products/:id", app.updateProductHandler)
-	router.HandlerFunc(http.MethodPatch, "/v1/movies/:id", app.updateProductHandler)
-	router.HandlerFunc(http.MethodDelete, "/v1/products/:id", app.deleteProductHandler)
+	router.HandlerFunc(http.MethodPut, "/v1/products/:id", app.requirePermission(app.updateProductHandler))
+	router.HandlerFunc(http.MethodPatch, "/v1/movies/:id", app.requirePermission(app.updateProductHandler))
+	router.HandlerFunc(http.MethodDelete, "/v1/products/:id", app.requirePermission(app.deleteProductHandler))
 	router.HandlerFunc(http.MethodGet, "/v1/products", app.listProductsHandler)
 
 	// Users
 	router.HandlerFunc(http.MethodPost, "/v1/users", app.registerUserHandler)
+
+	// Orders
+	router.HandlerFunc(http.MethodPost, "/v1/orders", app.createOrderHandler)
 
 	// Tokens (Generate a new token)
 	router.HandlerFunc(http.MethodPost, "/v1/tokens/authentication", app.createAuthenticationTokenHandler)
