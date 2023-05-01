@@ -42,8 +42,7 @@ func (product Product) Get(filter data.Filters, query ...interface{}) ([]Product
 	postClient = postClient.Offset(filter.Offset())
 
 	postClient.Find(&products, query...)
-	postClient.Model(&Product{}).Count(&totalCount)
-
+	totalCount = product.Count("", "")
 	metadata := data.CalculateMetadata(totalCount, filter.Page, filter.PageSize)
 	return products, metadata
 }

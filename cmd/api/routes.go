@@ -18,7 +18,7 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodPost, "/v1/products", app.requirePermission(app.createProductHandler))
 	router.HandlerFunc(http.MethodGet, "/v1/products/:id", app.showProductHandler)
 	router.HandlerFunc(http.MethodPut, "/v1/products/:id", app.requirePermission(app.updateProductHandler))
-	router.HandlerFunc(http.MethodPatch, "/v1/movies/:id", app.requirePermission(app.updateProductHandler))
+	router.HandlerFunc(http.MethodPatch, "/v1/products/:id", app.requirePermission(app.updateProductHandler))
 	router.HandlerFunc(http.MethodDelete, "/v1/products/:id", app.requirePermission(app.deleteProductHandler))
 	router.HandlerFunc(http.MethodGet, "/v1/products", app.listProductsHandler)
 
@@ -27,6 +27,8 @@ func (app *application) routes() http.Handler {
 
 	// Orders
 	router.HandlerFunc(http.MethodPost, "/v1/orders", app.createOrderHandler)
+	router.HandlerFunc(http.MethodGet, "/v1/orders/:id", app.showOrderHandler)
+	router.HandlerFunc(http.MethodGet, "/v1/orders", app.requirePermission(app.listOrderHandler))
 
 	// Tokens (Generate a new token)
 	router.HandlerFunc(http.MethodPost, "/v1/tokens/authentication", app.createAuthenticationTokenHandler)

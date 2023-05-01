@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gorm.io/gorm"
 	"shoppingApp/internal/client"
+	"shoppingApp/internal/data"
 	"shoppingApp/internal/validator"
 	"time"
 )
@@ -28,6 +29,40 @@ type Order struct {
 func (order Order) Create() (Order, error) {
 	result := client.PostgreSqlClient.Create(&order)
 	return order, result.Error
+}
+
+func (order Order) Find(query ...interface{}) (Order, error) {
+	result := client.PostgreSqlClient.Joins("Product", "products on orders.product_id = Product.id").
+		Joins("User", "users on orders.user_id = users.id").
+		First(&order, query...)
+	return order, result.Error
+}
+
+func (order Order) Get(filter data.Filters, query ...interface{}) ([]Order, data.Metadata) {
+	var orders []Order
+	postClient := client.PostgreSqlClient
+	var totalCount int64
+
+	postClient = postClient.Order(filter.SortColumn() + " " + filter.SortDirection())
+	postClient = postClient.Limit(filter.Limit())
+	postClient = postClient.Offset(filter.Offset())
+
+	postClient.Joins("Product", "products on orders.product_id = Product.id").Joins("User", "users on orders.user_id = users.id")
+	postClient.Find(&orders, query...)
+	totalCount = order.Count("", "")
+
+	metadata := data.CalculateMetadata(totalCount, filter.Page, filter.PageSize)
+	return orders, metadata
+}
+
+func (order Order) Count(column string, value interface{}) int64 {
+	var counter int64
+	postClient := client.PostgreSqlClient.Model(&order)
+	if column != "" && value != "" {
+		postClient.Where(column, value)
+	}
+	postClient.Count(&counter)
+	return counter
 }
 
 func validateOrderProduct(v *validator.Validator, productID int64) {
