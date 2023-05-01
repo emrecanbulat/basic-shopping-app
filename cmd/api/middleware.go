@@ -21,7 +21,7 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Vary", "Authorization")
 
-		if (strings.HasSuffix(r.URL.Path, "/users") && r.Method == http.MethodPost) || strings.HasSuffix(r.URL.Path, "/authentication") {
+		if (strings.HasSuffix(r.URL.Path, "/users") && r.Method == http.MethodPost) || strings.HasSuffix(r.URL.Path, "/authentication") || strings.HasSuffix(r.URL.Path, "/healthcheck") {
 			next.ServeHTTP(w, r)
 			return
 		}
