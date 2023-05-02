@@ -21,7 +21,7 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Vary", "Authorization")
 
-		if (strings.HasSuffix(r.URL.Path, "/users") && r.Method == http.MethodPost) || strings.HasSuffix(r.URL.Path, "/authentication") || strings.HasSuffix(r.URL.Path, "/healthcheck") {
+		if isAuthRequest(r) || isHealthCheckRequest(r) {
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -64,6 +64,12 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 		}
 
 		user, _ := model.User{}.Find("id = ? AND email = ?", jwtParse.Id, jwtParse.Email)
+
+		activityErr := SetUserActivity(user, r.Method, r.URL.Path, "")
+		if activityErr != nil {
+			app.serverErrorResponse(w, r, activityErr)
+			return
+		}
 		r = app.contextSetUser(r, &user)
 
 		next.ServeHTTP(w, r)
@@ -93,4 +99,18 @@ func (app *application) requirePermission(next http.HandlerFunc) http.HandlerFun
 
 		next.ServeHTTP(w, r)
 	}
+}
+
+func isAuthRequest(r *http.Request) bool {
+	if (strings.HasSuffix(r.URL.Path, "/users") && r.Method == http.MethodPost) || strings.HasSuffix(r.URL.Path, "/authentication") {
+		return true
+	}
+	return false
+}
+
+func isHealthCheckRequest(r *http.Request) bool {
+	if strings.HasSuffix(r.URL.Path, "/healthcheck") {
+		return true
+	}
+	return false
 }

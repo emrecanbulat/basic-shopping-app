@@ -30,6 +30,10 @@ type application struct {
 	logger *jsonlog.Logger
 }
 
+func Hello(res http.ResponseWriter, req *http.Request) {
+	fmt.Fprint(res, "Hello From Shopping App")
+}
+
 func main() {
 	var cfg config
 	appPort, _ := strconv.Atoi(os.Getenv("APP_PORT"))

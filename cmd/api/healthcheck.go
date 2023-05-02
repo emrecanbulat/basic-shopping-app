@@ -8,7 +8,8 @@ import (
 // application status, operating environment and version.
 func (app *application) healthcheckHandler(w http.ResponseWriter, r *http.Request) {
 	data := envelope{
-		"status": "available",
+		"message": "I'm OK.",
+		"status":  "available",
 		"system_info": map[string]string{
 			"environment": app.config.env,
 			"version":     os.Getenv("VERSION"),

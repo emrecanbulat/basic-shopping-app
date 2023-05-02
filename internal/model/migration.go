@@ -14,6 +14,7 @@ func Migrate() {
 		&User{},
 		&Token{},
 		&Order{},
+		&UserActivity{},
 	)
 
 	if err != nil {

@@ -20,7 +20,7 @@ type User struct {
 	Password  []byte         `json:"-" gorm:"type:bytea;size:100;not null"`
 	Phone     string         `json:"phone" gorm:"type:text;size:100;not null"`
 	Address   string         `json:"address" gorm:"type:text;size:200;not null"`
-	IsAdmin   bool           `json:"is_admin" gorm:"type:bool;not null"`
+	IsAdmin   bool           `json:"-" gorm:"type:bool;not null"`
 }
 
 // Custom ErrDuplicateEmail error.

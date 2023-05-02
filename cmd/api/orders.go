@@ -6,6 +6,7 @@ import (
 	"shoppingApp/internal/data"
 	"shoppingApp/internal/model"
 	"shoppingApp/internal/validator"
+	"time"
 )
 
 // createProductHandler for the "POST /v1/products" endpoint.
@@ -56,7 +57,7 @@ func (app *application) createOrderHandler(w http.ResponseWriter, r *http.Reques
 		"status":       "processing",
 		"payment_type": newOrder.PaymentType,
 		"amount_paid":  newOrder.AmountPaid,
-		"order_date":   order.CreatedAt.Format("2006-01-02 15:04:05"),
+		"order_date":   time.Now().Format(time.DateTime),
 	}
 
 	orderProduct := map[string]interface{}{

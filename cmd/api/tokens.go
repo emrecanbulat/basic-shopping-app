@@ -60,7 +60,10 @@ func (app *application) createAuthenticationTokenHandler(w http.ResponseWriter, 
 	if tokenCheck > 0 {
 		token, err = model.Token{}.Find("user_id", user.ID)
 		newToken, _ := model.GenerateToken(user, app.config.jwt.secret)
-		err = token.Update("hash", newToken.Hash)
+		err = token.Updates(model.Token{
+			Hash:   newToken.Hash,
+			Expiry: time.Now().Add(24 * time.Hour),
+		})
 		token.Hash = newToken.Hash
 	} else {
 		token, err = model.Token{}.Create(user, app.config.jwt.secret)
@@ -79,6 +82,12 @@ func (app *application) createAuthenticationTokenHandler(w http.ResponseWriter, 
 	authentication := map[string]string{
 		"token":  string(token.Hash),
 		"expiry": token.Expiry.Format(time.DateTime),
+	}
+
+	activityErr := SetUserActivity(user, r.Method, r.URL.Path, "logged in")
+	if activityErr != nil {
+		app.serverErrorResponse(w, r, activityErr)
+		return
 	}
 
 	err = app.writeJSON(w, http.StatusCreated, envelope{"authentication": authentication}, nil)

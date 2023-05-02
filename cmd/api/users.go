@@ -60,6 +60,12 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	activityErr := SetUserActivity(newUser, r.Method, r.URL.Path, "New User")
+	if activityErr != nil {
+		app.serverErrorResponse(w, r, activityErr)
+		return
+	}
+
 	token, err := model.Token{}.Create(newUser, app.config.jwt.secret)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)

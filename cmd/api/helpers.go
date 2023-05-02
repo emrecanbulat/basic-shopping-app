@@ -9,9 +9,11 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"shoppingApp/internal/model"
 	"shoppingApp/internal/validator"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // envelope is used for wrapping JSON responses.
@@ -174,4 +176,19 @@ func (p *password) Matches(plaintextPassword string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+// SetUserActivity sets the user activity to database
+func SetUserActivity(user model.User, method, action, description string) error {
+	_, err := model.UserActivity{
+		User:        user,
+		Type:        method,
+		Action:      action,
+		Description: description,
+		CreatedAt:   time.Time{},
+		UserName:    user.FullName,
+		UserEmail:   user.Email,
+	}.Create()
+
+	return err
 }
