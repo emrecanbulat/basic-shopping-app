@@ -25,7 +25,7 @@ func (app *application) createOrderHandler(w http.ResponseWriter, r *http.Reques
 
 	product, _ := model.Product{}.Find("id", input.ProductID)
 	if product.ID == 0 {
-		app.serverErrorResponse(w, r, model.ErrProductNotFound)
+		app.errorResponse(w, r, http.StatusBadRequest, model.ErrProductNotFound.Error())
 		return
 	}
 
