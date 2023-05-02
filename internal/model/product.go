@@ -86,7 +86,7 @@ func ValidateProduct(v *validator.Validator, product *Product) {
 	v.Check(len(product.Brand) <= 60, "brand", "must not be more than 60 characters long")
 
 	v.Check(product.Category != nil, "category", "must be provided")
-	v.Check(len(product.Category) >= 1, "category", "must contain at least 1 genre")
-	v.Check(len(product.Category) <= 5, "category", "must not contain more than 5 genres")
+	v.Check(len(product.Category) >= 1, "category", "must contain at least 1 category")
+	v.Check(len(product.Category) <= 5, "category", "must not contain more than 5 category")
 	v.Check(validator.Unique(product.Category), "category", "must not contain duplicate values")
 }

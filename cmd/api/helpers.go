@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"shoppingApp/internal/activity_logger"
 	"shoppingApp/internal/model"
 	"shoppingApp/internal/validator"
 	"strconv"
@@ -189,6 +190,8 @@ func SetUserActivity(user model.User, method, action, description string) error 
 		UserName:    user.FullName,
 		UserEmail:   user.Email,
 	}.Create()
+
+	activity_logger.InfoLogger.Printf("%s | %s | %s | %s | %s", user.FullName, user.Email, method, action, description)
 
 	return err
 }

@@ -43,9 +43,9 @@ func main() {
 	flag.StringVar(&cfg.jwt.secret, "jwt-secret", os.Getenv("JWT_SECRET"), "JWT secret")
 	flag.Parse()
 
-	client.Connections()
-	model.Migrate()
-	seed.Seed()
+	client.Connections() // database connection
+	model.Migrate()      // database migration
+	seed.Seed()          // seed dummy data
 
 	logger := jsonlog.New(os.Stdout, jsonlog.LevelInfo)
 

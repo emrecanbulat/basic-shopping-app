@@ -1,9 +1,11 @@
 package seed
 
-import "fmt"
+import (
+	"log"
+)
 
 func Seed() {
 	UserSeed()
 	ProductSeed()
-	fmt.Println("Seeding finished")
+	log.Println("Seeding successfully completed")
 }

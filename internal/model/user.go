@@ -25,9 +25,7 @@ type User struct {
 
 // Custom ErrDuplicateEmail error.
 
-var (
-	ErrDuplicateEmail = errors.New("duplicate email")
-)
+var ErrDuplicateEmail = errors.New("duplicate email")
 
 func (user User) Create() (User, error) {
 	result := client.PostgreSqlClient.Create(&user)

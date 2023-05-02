@@ -3,7 +3,8 @@
 -   **Language**
     -   [Go v1.20](https://go.dev/dl/ "https://go.dev/dl/")        
 -   **Libraries**
-    -   [go-gorm/gorm](https://github.com/go-gorm/gorm "https://github.com/go-gorm/gorm") (ORM library for Golang)        
+    -   [go-gorm/gorm](https://github.com/go-gorm/gorm "https://github.com/go-gorm/gorm") (ORM library for Golang)
+    -   [jwt.io](https://jwt.io/ "https://jwt.io/") (JSON Web Tokens)
 -   **Tools**    
     -   [PostgreSql](https://www.postgresql.org/download/ "https://www.postgresql.org/download/")
      -   [Docker](https://www.docker.com/products/docker-desktop/ "https://www.docker.com/products/docker-desktop/")           
