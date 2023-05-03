@@ -1,8 +1,10 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
+	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
 	"log"
 	"net/http"
@@ -14,6 +16,8 @@ import (
 	"strconv"
 	"time"
 )
+
+var EnvFileError = errors.New("error loading .env file. Please make sure you are working in the correct directory")
 
 // Define a config struct to hold all the configuration settings for our application.
 type config struct {
@@ -36,6 +40,14 @@ func Hello(res http.ResponseWriter, req *http.Request) {
 
 func main() {
 	var cfg config
+	logger := jsonlog.New(os.Stdout, jsonlog.LevelInfo)
+
+	// Load environment file
+	err := godotenv.Load(".env")
+	if err != nil {
+		logger.PrintFatal(EnvFileError, nil)
+	}
+
 	appPort, _ := strconv.Atoi(os.Getenv("APP_PORT"))
 
 	flag.IntVar(&cfg.port, "port", appPort, "API server port")
@@ -46,8 +58,6 @@ func main() {
 	client.Connections() // database connection
 	model.Migrate()      // database migration
 	seed.Seed()          // seed dummy data
-
-	logger := jsonlog.New(os.Stdout, jsonlog.LevelInfo)
 
 	app := &application{
 		config: cfg,
@@ -68,6 +78,6 @@ func main() {
 		"env":  cfg.env,
 	})
 
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 	logger.PrintFatal(err, nil)
 }
