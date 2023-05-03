@@ -1,0 +1,508 @@
+{
+	"info": {
+		"_postman_id": "92270619-e5bc-438b-987b-462e32ebc419",
+		"name": "shoppingApp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10561744"
+	},
+	"item": [
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImV4cCI6MTY4MzE4NzQ3Ni4zODc2MTMzLCJpYXQiOjE2ODMxMDEwNzYuMzg3NjEzMywiaWQiOjEsIm5iZiI6MTY4MzEwMTA3Ni4zODc2MTMzfQ.l63-y3udJ84Kq_MFxCk_rXJG2vywMwxh1vgxkzDTJ3U",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"title\": \"New Product\",\r\n      \"description\": \"an amazing product\",\r\n      \"price\": 30899,\r\n      \"brand\": \"Brand\",\r\n      \"category\":[\r\n          \"cat1\",\r\n          \"cat2\"\r\n      ]\r\n     \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/products",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImV4cCI6MTY4MzE4NzQ3Ni4zODc2MTMzLCJpYXQiOjE2ODMxMDEwNzYuMzg3NjEzMywiaWQiOjEsIm5iZiI6MTY4MzEwMTA3Ni4zODc2MTMzfQ.l63-y3udJ84Kq_MFxCk_rXJG2vywMwxh1vgxkzDTJ3U",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"title\": \"new title\",\r\n      \"description\": \"new description\",\r\n      \"price\": 18899,\r\n      \"brand\": \"new Brand\",\r\n      \"category\": [\r\n          \"smartphones\",\r\n          \"electronic\"\r\n      ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/products/8",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"products",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patch",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImV4cCI6MTY4MzE4NzQ3Ni4zODc2MTMzLCJpYXQiOjE2ODMxMDEwNzYuMzg3NjEzMywiaWQiOjEsIm5iZiI6MTY4MzEwMTA3Ni4zODc2MTMzfQ.l63-y3udJ84Kq_MFxCk_rXJG2vywMwxh1vgxkzDTJ3U",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"title\": \"iPhone 14 edit\",\r\n      \"category\":[\r\n          \"new cat\"\r\n      ]\r\n      \r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/products/8",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"products",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImV4cCI6MTY4MzE4NzQ3Ni4zODc2MTMzLCJpYXQiOjE2ODMxMDEwNzYuMzg3NjEzMywiaWQiOjEsIm5iZiI6MTY4MzEwMTA3Ni4zODc2MTMzfQ.l63-y3udJ84Kq_MFxCk_rXJG2vywMwxh1vgxkzDTJ3U",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/v1/products/3",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"products",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImV4cCI6MTY4MzE4NzQ3Ni4zODc2MTMzLCJpYXQiOjE2ODMxMDEwNzYuMzg3NjEzMywiaWQiOjEsIm5iZiI6MTY4MzEwMTA3Ni4zODc2MTMzfQ.l63-y3udJ84Kq_MFxCk_rXJG2vywMwxh1vgxkzDTJ3U",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/v1/products/4",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"products",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImV4cCI6MTY4MzE4NzQ3Ni4zODc2MTMzLCJpYXQiOjE2ODMxMDEwNzYuMzg3NjEzMywiaWQiOjEsIm5iZiI6MTY4MzEwMTA3Ni4zODc2MTMzfQ.l63-y3udJ84Kq_MFxCk_rXJG2vywMwxh1vgxkzDTJ3U",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/v1/products?page=2&page_size=2&sort=-price",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"products"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "product",
+									"disabled": true
+								},
+								{
+									"key": "brand",
+									"value": "brand",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "cat1",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "2"
+								},
+								{
+									"key": "page_size",
+									"value": "2"
+								},
+								{
+									"key": "sort",
+									"value": "-price"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImNhbmJ1bGF0OTVAZ21haWwuY29tIiwiZXhwIjoxNjgyOTYyMTAxLjM3NDQ0LCJpYXQiOjE2ODI4NzU3MDEuMzc0NDQsImlkIjoxLCJuYmYiOjE2ODI4NzU3MDEuMzc0NDQsInJvbGUiOiJhZG1pbiJ9.C02owg5C9sH7mOv3fJnw50oQIeddoGhDogZbqs-ppYY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Access",
+								"value": "admin",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"full_name\":\"Emre Canbulat\",\r\n    \"email\":\"canbulat95@gmail.com\",\r\n    \"password\":\"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/users",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get Token",
+			"item": [
+				{
+					"name": "Authentication",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImV4cCI6MTY4MzExMzQwMS43MDU3NTk4LCJpYXQiOjE2ODMwMjcwMDEuNzA1NzU5OCwiaWQiOjEsIm5iZiI6MTY4MzAyNzAwMS43MDU3NTk4fQ.RR_RbdTagicBR_i35ThQSDD2sn7cL_vVpM6mgh-bmTk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Access",
+								"value": "admin",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\": \"password\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/tokens/authentication",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"tokens",
+								"authentication"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Make Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImV4cCI6MTY4MzE4NzQ3Ni4zODc2MTMzLCJpYXQiOjE2ODMxMDEwNzYuMzg3NjEzMywiaWQiOjEsIm5iZiI6MTY4MzEwMTA3Ni4zODc2MTMzfQ.l63-y3udJ84Kq_MFxCk_rXJG2vywMwxh1vgxkzDTJ3U",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"product_id\": 1,\r\n      \"payment_type\": \"Credit_card\",\r\n      \"amount_paid\": 356\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/orders",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImV4cCI6MTY4MzE4NzQ3Ni4zODc2MTMzLCJpYXQiOjE2ODMxMDEwNzYuMzg3NjEzMywiaWQiOjEsIm5iZiI6MTY4MzEwMTA3Ni4zODc2MTMzfQ.l63-y3udJ84Kq_MFxCk_rXJG2vywMwxh1vgxkzDTJ3U",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/orders/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"orders",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImV4cCI6MTY4MzE4NzQ3Ni4zODc2MTMzLCJpYXQiOjE2ODMxMDEwNzYuMzg3NjEzMywiaWQiOjEsIm5iZiI6MTY4MzEwMTA3Ni4zODc2MTMzfQ.l63-y3udJ84Kq_MFxCk_rXJG2vywMwxh1vgxkzDTJ3U",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/v1/orders?page_size=4&page=1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"v1",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "page_size",
+									"value": "4"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Healthcheck",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/v1/healthcheck",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"healthcheck"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
