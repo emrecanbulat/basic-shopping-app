@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"shoppingApp/internal/model"
 	"shoppingApp/internal/validator"
+	"strings"
 	"time"
 )
 
@@ -26,7 +27,7 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 
 	user := &model.User{
 		FullName: input.FullName,
-		Email:    input.Email,
+		Email:    strings.ToLower(input.Email),
 		IsAdmin:  false,
 		Password: []byte(input.Password),
 		Address:  input.Address,
