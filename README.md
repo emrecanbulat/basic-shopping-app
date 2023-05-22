@@ -28,7 +28,7 @@
 **1) Download the codebase**
 
 ```bash
-    git clone https://github.com/emrecanbulat/ekinoks-shopping-app.git
+    git clone https://github.com/emrecanbulat/basic-shopping-app.git
 ```
 
 **2) Fetch dependencies from** `go.mod`
